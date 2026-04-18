@@ -1,63 +1,108 @@
-# ContentNFT - Marketplace de Contenido Verificado
+# 🏆 Hooks4Winners - NFT Marketplace
 
-Marketplace de NFTs para contenido verificado y especializado en Monad Testnet.
+<div align="center">
+
+![Monad](https://img.shields.io/badge/Powered%20by-Monad%20Testnet-f59e0b?style=for-the-badge)
+![React](https://img.shields.io/badge/Frontend-React%2018-61dafb?style=for-the-badge)
+![Solidity](https://img.shields.io/badge/Smart%20Contracts-Solidity-363636?style=for-the-badge)
+![Node.js](https://img.shields.io/badge/Backend-Node.js-339933?style=for-the-badge)
+
+**Marketplace de Contenido Verificado y Tokenizado en Monad Testnet**
+
+[Ver Contratos en Explorer](#-contratos-desplegados) · [Reportar Bug](https://github.com/irwingtello/hooks4winners/issues) · [Solicitar Feature](https://github.com/irwingtello/hooks4winners/issues)
+
+</div>
+
+---
+
+## 📖 Descripción
+
+**Hooks4Winners** es un marketplace de NFTs enfocado en contenido verificado y especializado. Cada NFT representa contenido digital con métricas reales y comprobadas, permitiendo a creadores monetizar su trabajo y a compradores acceder a contenido de calidad probada.
+
+### ¿Por qué Hooks4Winners?
+
+- ✅ **Contenido Verificado**: Métricas reales de visitas, likes, CTR y conversiones
+- ✅ **Sin Intermediarios**: Conexión directa entre creadores y compradores
+- ✅ **Transparencia Total**: Datos verificables en blockchain
+- ✅ **Monetización Real**: Los creadores pueden vender su contenido tokenizado
+
+---
 
 ## 🚀 Características
 
-- **Contenido Verificado**: Cada NFT incluye métricas reales (visitas, likes, CTR, conversiones)
-- **Monad Testnet**: Transacciones ultra rápidas con costos mínimos
-- **Estándar ERC721**: NFTs compatibles con cualquier wallet
-- **Marketplace Integrado**: Compra y venta de NFTs directamente en la plataforma
-- **IPFS Storage**: Metadatos almacenados de forma descentralizada via Pinata
+| Característica               | Descripción                                           |
+| ---------------------------- | ----------------------------------------------------- |
+| 🎨 **NFTs ERC721**           | Tokens estándar compatibles con cualquier wallet      |
+| 📊 **Métricas Verificadas**  | Visitas, likes, suscriptores, CTR y conversiones      |
+| 🏪 **Marketplace Integrado** | Compra y venta directa en la plataforma               |
+| 💰 **Pagos en MON**          | Transacciones en la moneda nativa de Monad            |
+| 🔗 **IPFS Storage**          | Metadatos almacenados descentralizadamente via Pinata |
+| 🌐 **Monad Explorer**        | Verificación de contratos y transacciones             |
+
+---
 
 ## 📁 Estructura del Proyecto
 
 ```
 Monad/
-├── contracts/          # Smart Contracts (Hardhat)
+├── 📂 contracts/              # Smart Contracts (Hardhat)
 │   ├── contracts/
-│   │   ├── ContentNFT.sol      # Contrato NFT ERC721
-│   │   └── NFTMarketplace.sol  # Contrato Marketplace
-│   └── scripts/
-│       └── deploy.js           # Script de despliegue
+│   │   ├── ContentNFT.sol       # Contrato NFT ERC721
+│   │   └── NFTMarketplace.sol   # Contrato Marketplace
+│   ├── scripts/
+│   │   ├── deploy.js            # Script de despliegue
+│   │   └── mintFirstNFT.js      # Script para mintear NFT inicial
+│   └── artifacts/               # Compilaciones
 │
-├── backend/            # API Server (Node.js + Express)
+├── 📂 backend/                # API Server (Node.js + Express)
 │   ├── routes/
-│   │   ├── nftRoutes.js
-│   │   └── marketplaceRoutes.js
+│   │   ├── nftRoutes.js         # Rutas para NFTs
+│   │   └── marketplaceRoutes.js # Rutas del marketplace
 │   ├── services/
-│   │   ├── pinataService.js
-│   │   └── blockchainService.js
-│   └── abis/
-│       ├── ContentNFT.json
-│       └── NFTMarketplace.json
+│   │   ├── pinataService.js     # Servicio IPFS/Pinata
+│   │   └── blockchainService.js # Servicio de blockchain
+│   └── abis/                    # ABIs de los contratos
 │
-└── frontend/           # React App (Material UI)
+└── 📂 frontend/               # React App (Material UI)
     └── src/
-        ├── components/
-        ├── context/
-        └── pages/
+        ├── components/          # Componentes reutilizables
+        ├── context/             # Web3 Context
+        ├── pages/               # Páginas de la app
+        └── abis/                # ABIs para frontend
 ```
+
+---
 
 ## 🛠️ Instalación
 
-### 1. Clonar y configurar el proyecto
+### Prerrequisitos
+
+- Node.js >= 18.x
+- npm o yarn
+- MetaMask u otra wallet Web3
+- MON en Monad Testnet (obtener del [faucet](https://faucet.monad.xyz))
+
+### 1. Clonar el repositorio
 
 ```bash
-# Instalar dependencias de contratos
-cd contracts
-npm install
-
-# Instalar dependencias del backend
-cd ../backend
-npm install
-
-# Instalar dependencias del frontend
-cd ../frontend
-npm install
+git clone git@github.com:irwingtello/hooks4winners.git
+cd hooks4winners
 ```
 
-### 2. Configurar variables de entorno
+### 2. Instalar dependencias
+
+```bash
+# Contratos
+cd contracts && npm install
+
+# Backend
+cd ../backend && npm install
+
+# Frontend
+cd ../frontend && npm install
+```
+
+### 3. Configurar variables de entorno
 
 #### Backend (`backend/.env`)
 
@@ -76,77 +121,153 @@ JWT_SECRET=tu_jwt_secret
 
 ```env
 REACT_APP_API_URL=http://localhost:5000/api
+REACT_APP_CONTENT_NFT_ADDRESS=0x662635F3C1332e1227a02E73970fA344D596B9A1
+REACT_APP_MARKETPLACE_ADDRESS=0xAB56D16876BBb5cEeF8707ecfb1Da207A43c5e69
+REACT_APP_MONAD_EXPLORER_URL=https://testnet.monadexplorer.com
 ```
 
-### 3. Desplegar Contratos en Monad Testnet
+### 4. Desplegar Contratos
 
 ```bash
 cd contracts
 npx hardhat run scripts/deploy.js --network monad
 ```
 
-Copia las direcciones de los contratos desplegados al archivo `.env` del backend.
-
-### 4. Iniciar los Servicios
+### 5. Iniciar la aplicación
 
 ```bash
-# Iniciar Backend (puerto 5000)
+# Terminal 1 - Backend
 cd backend
 npm start
 
-# En otra terminal, iniciar Frontend (puerto 3000)
+# Terminal 2 - Frontend
 cd frontend
 npm start
 ```
+
+---
 
 ## 🔧 Configuración de Monad Testnet
 
 Agrega Monad Testnet a MetaMask:
 
-- **Network Name**: Monad Testnet
-- **RPC URL**: https://testnet-rpc.monad.xyz
-- **Chain ID**: 10143 (0x279f)
-- **Symbol**: MON
-- **Block Explorer**: https://testnet-explorer.monad.xyz/
+| Parámetro          | Valor                             |
+| ------------------ | --------------------------------- |
+| **Network Name**   | Monad Testnet                     |
+| **RPC URL**        | https://testnet-rpc.monad.xyz     |
+| **Chain ID**       | 10143 (0x279f)                    |
+| **Symbol**         | MON                               |
+| **Block Explorer** | https://testnet.monadexplorer.com |
 
-## 📝 Uso
+---
 
-1. **Conectar Wallet**: Haz clic en "Conectar Wallet" en la barra de navegación
-2. **Crear NFT**: Ve a "Crear NFT" y completa la información del contenido
-3. **Ver Marketplace**: Explora NFTs disponibles para comprar
-4. **Comprar/Vender**: Los propietarios pueden poner sus NFTs en venta
+## 📝 Contratos Desplegados
+
+| Contrato           | Dirección                                    | Explorer                                                                                                |
+| ------------------ | -------------------------------------------- | ------------------------------------------------------------------------------------------------------- |
+| **ContentNFT**     | `0x662635F3C1332e1227a02E73970fA344D596B9A1` | [Ver en Explorer](https://testnet.monadexplorer.com/address/0x662635F3C1332e1227a02E73970fA344D596B9A1) |
+| **NFTMarketplace** | `0xAB56D16876BBb5cEeF8707ecfb1Da207A43c5e69` | [Ver en Explorer](https://testnet.monadexplorer.com/address/0xAB56D16876BBb5cEeF8707ecfb1Da207A43c5e69) |
+
+---
+
+## 🎮 Uso
+
+### Conectar Wallet
+
+1. Haz clic en "Conectar Wallet" en la barra de navegación
+2. Acepta la conexión en MetaMask
+
+### Crear NFT
+
+1. Navega a "Crear NFT"
+2. Completa la información del contenido:
+   - Nombre y descripción
+   - Métricas (visitas, likes, CTR, etc.)
+   - Categoría y tipo de contenido
+   - Imagen (opcional)
+3. Confirma la transacción
+
+### Comprar/Vender
+
+- Los propietarios pueden poner sus NFTs en venta
+- Los compradores pueden adquirir NFTs directamente con MON
+
+---
 
 ## 🎨 Formato de Metadatos NFT
 
 ```json
 {
-	"name": "Título del Contenido",
-	"description": "Descripción del contenido",
+	"name": "Guion de Video Premium",
+	"description": "Guion verificado con alto rendimiento",
 	"external_url": "https://ejemplo.com/contenido",
-	"image": "ipfs://...",
+	"image": "ipfs://Qm...",
 	"attributes": [
 		{ "trait_type": "Género", "value": "Comedia" },
+		{ "trait_type": "Tipo", "value": "Video" },
+		{ "trait_type": "Plataforma", "value": "YouTube" },
 		{ "trait_type": "Visitas", "value": 1697, "display_type": "number" },
 		{ "trait_type": "Likes", "value": 17, "display_type": "number" },
-		{
-			"trait_type": "Tasa de Clics",
-			"value": 3,
-			"display_type": "boost_percentage"
-		}
+		{ "trait_type": "CTR", "value": 3, "display_type": "boost_percentage" }
 	]
 }
 ```
 
+---
+
+## 🛣️ Roadmap
+
+- [x] Smart Contracts (ContentNFT + NFTMarketplace)
+- [x] Frontend React con Material UI
+- [x] Backend API con Express
+- [x] Integración con Monad Testnet
+- [x] Monad Explorer links
+- [ ] Sistema de ofertas/bids
+- [ ] Royalties para creadores
+- [ ] Colecciones de NFTs
+- [ ] Gobernanza DAO
+
+---
+
 ## 🔐 Seguridad
+
+⚠️ **Importante:**
 
 - Nunca compartas tu `PRIVATE_KEY`
 - Usa variables de entorno para información sensible
-- Los contratos están diseñados para testnet
+- Los contratos están desplegados en testnet
+- Verifica siempre las transacciones antes de firmar
+
+---
+
+## 🤝 Contribuir
+
+1. Fork el repositorio
+2. Crea una rama para tu feature (`git checkout -b feature/nueva-funcionalidad`)
+3. Commit tus cambios (`git commit -m 'Agregar nueva funcionalidad'`)
+4. Push a la rama (`git push origin feature/nueva-funcionalidad`)
+5. Abre un Pull Request
+
+---
 
 ## 👤 Autor
 
-**hooksforwinners** - ContentNFT Marketplace
+**Irwing Tello**
+
+- GitHub: [@irwingtello](https://github.com/irwingtello)
+
+---
 
 ## 📜 Licencia
 
-MIT License
+Este proyecto está bajo la Licencia MIT - ver el archivo [LICENSE](LICENSE) para más detalles.
+
+---
+
+<div align="center">
+
+**Hecho con ❤️ para la comunidad de Monad**
+
+[⬆ Volver arriba](#-hooks4winners---nft-marketplace)
+
+</div>
