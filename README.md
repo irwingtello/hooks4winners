@@ -246,6 +246,60 @@ https://fileverse.io/d/QmXxxx...xxx
 
 ---
 
+## 🚀 Despliegue en Vercel
+
+### Configuración automática
+
+El proyecto incluye `vercel.json` para despliegue automático de frontend y backend:
+
+```json
+{
+	"experimentalServices": {
+		"frontend": {
+			"entrypoint": "frontend",
+			"routePrefix": "/",
+			"framework": "create-react-app"
+		},
+		"backend": {
+			"entrypoint": "backend",
+			"routePrefix": "/_/backend"
+		}
+	}
+}
+```
+
+### Pasos para desplegar
+
+1. **Sube el código a GitHub** (ver instrucciones arriba)
+
+2. **Instala el skill de Vercel recomendado**:
+
+   ```bash
+   npx skills add https://github.com/vercel-labs/agent-skills --skill vercel-react-best-practices
+   ```
+
+3. **Despliega desde Vercel**:
+   - Ve a [vercel.com](https://vercel.com)
+   - Importa el repositorio `irwingtello/hooks4winners`
+   - Vercel detectará automáticamente la configuración
+
+### Variables de entorno requeridas
+
+Configura estas variables en Vercel Dashboard → Settings → Environment Variables:
+
+| Variable                        | Descripción                                |
+| ------------------------------- | ------------------------------------------ |
+| `REACT_APP_API_URL`             | URL del backend (auto-generada por Vercel) |
+| `REACT_APP_CONTENT_NFT_ADDRESS` | Dirección del contrato NFT                 |
+| `REACT_APP_MARKETPLACE_ADDRESS` | Dirección del Marketplace                  |
+| `REACT_APP_MONAD_EXPLORER_URL`  | URL del explorador Monad                   |
+| `PRIVATE_KEY`                   | Clave privada para transacciones backend   |
+| `MONAD_RPC_URL`                 | RPC endpoint de Monad                      |
+| `PINATA_API_KEY`                | API Key de Pinata                          |
+| `PINATA_SECRET_KEY`             | Secret Key de Pinata                       |
+
+---
+
 ## 🛣️ Roadmap
 
 - [x] Smart Contracts (ContentNFT + NFTMarketplace)
