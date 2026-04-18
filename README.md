@@ -25,19 +25,22 @@
 - ✅ **Sin Intermediarios**: Conexión directa entre creadores y compradores
 - ✅ **Transparencia Total**: Datos verificables en blockchain
 - ✅ **Monetización Real**: Los creadores pueden vender su contenido tokenizado
+- ✅ **Privacidad Garantizada**: Metadatos almacenados en Fileverse para acceso privado post-compra
+- ✅ **Colaboración en Tiempo Real**: Los compradores pueden colaborar con el contenido después de la adquisición
 
 ---
 
 ## 🚀 Características
 
-| Característica               | Descripción                                           |
-| ---------------------------- | ----------------------------------------------------- |
-| 🎨 **NFTs ERC721**           | Tokens estándar compatibles con cualquier wallet      |
-| 📊 **Métricas Verificadas**  | Visitas, likes, suscriptores, CTR y conversiones      |
-| 🏪 **Marketplace Integrado** | Compra y venta directa en la plataforma               |
-| 💰 **Pagos en MON**          | Transacciones en la moneda nativa de Monad            |
-| 🔗 **IPFS Storage**          | Metadatos almacenados descentralizadamente via Pinata |
-| 🌐 **Monad Explorer**        | Verificación de contratos y transacciones             |
+| Característica               | Descripción                                                             |
+| ---------------------------- | ----------------------------------------------------------------------- |
+| 🎨 **NFTs ERC721**           | Tokens estándar compatibles con cualquier wallet                        |
+| 📊 **Métricas Verificadas**  | Visitas, likes, suscriptores, CTR y conversiones                        |
+| 🏪 **Marketplace Integrado** | Compra y venta directa en la plataforma                                 |
+| 💰 **Pagos en MON**          | Transacciones en la moneda nativa de Monad                              |
+| 🔒 **Fileverse Storage**     | Metadatos privados con acceso post-compra y colaboración en tiempo real |
+| 📖 **Human Readable**        | Contenido legible y editable directamente en Fileverse                  |
+| 🌐 **Monad Explorer**        | Verificación de contratos y transacciones                               |
 
 ---
 
@@ -191,6 +194,34 @@ Agrega Monad Testnet a MetaMask:
 
 - Los propietarios pueden poner sus NFTs en venta
 - Los compradores pueden adquirir NFTs directamente con MON
+
+---
+
+## 🔒 Almacenamiento con Fileverse
+
+**Fileverse** es la solución de almacenamiento de metadatos que garantiza privacidad y colaboración en tiempo real:
+
+### ¿Por qué Fileverse?
+
+| Beneficio                          | Descripción                                                  |
+| ---------------------------------- | ------------------------------------------------------------ |
+| 🔐 **Privacidad**                  | El contenido solo es accesible después de la compra del NFT  |
+| 📖 **Human Readable**              | Contenido legible directamente, sin necesidad de decodificar |
+| 🤝 **Colaboración en Tiempo Real** | Compradores y creadores pueden colaborar en el contenido     |
+| 🔄 **Actualizaciones**             | El contenido puede ser actualizado por el propietario        |
+
+### Flujo de Trabajo
+
+1. **Creación**: El creador sube el contenido a Fileverse y obtiene una URL privada
+2. **Mint**: Se crea el NFT con la URL de Fileverse como metadato
+3. **Compra**: Al comprar el NFT, el nuevo propietario obtiene acceso al contenido
+4. **Colaboración**: El propietario puede editar y colaborar en el contenido en tiempo real
+
+### Ejemplo de URL Fileverse
+
+```
+https://fileverse.io/d/QmXxxx...xxx
+```
 
 ---
 
