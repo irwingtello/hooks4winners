@@ -1,4 +1,6 @@
 {
+    "name": "hooks4winners",
+    "version": 2,
     "experimentalServices": {
         "frontend": {
             "entrypoint": "frontend",
