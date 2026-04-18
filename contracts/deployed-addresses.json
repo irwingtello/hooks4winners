@@ -1,0 +1,8 @@
+{
+  "network": "monad-testnet",
+  "chainId": 10143,
+  "nftContract": "0x662635F3C1332e1227a02E73970fA344D596B9A1",
+  "marketplaceContract": "0xAB56D16876BBb5cEeF8707ecfb1Da207A43c5e69",
+  "deployer": "0x77372ceEdbED6CCeD9AeBE369bdC7158e42F444b",
+  "deployedAt": "2026-04-18T22:01:10.596Z"
+}
