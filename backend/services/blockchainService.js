@@ -54,6 +54,7 @@ class BlockchainService {
     });
     const data = await response.json();
     if (data.error) {
+      console.error('RPC Error:', data.error);
       throw new Error(data.error.message || 'RPC Error');
     }
     return data.result;
@@ -63,6 +64,15 @@ class BlockchainService {
    * Make a direct eth_call to a contract
    */
   async _ethCall(to, data) {
+    // Ensure to is a valid address
+    if (!to || !ethers.isAddress(to)) {
+      throw new Error(`Invalid contract address: ${to}`);
+    }
+    // Ensure data is a valid hex string
+    if (!data || !data.startsWith('0x')) {
+      throw new Error(`Invalid call data: ${data}`);
+    }
+    console.log(`eth_call to: ${to}, data: ${data.substring(0, 20)}...`);
     return await this._rpcCall('eth_call', [{ to, data }, 'latest']);
   }
 
