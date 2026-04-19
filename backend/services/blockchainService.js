@@ -224,12 +224,14 @@ class BlockchainService {
   }
 
   /**
-   * Get all active marketplace listings
+   * Get all active marketplace listings - using direct RPC call
    */
   async getActiveListings() {
     try {
-      const contract = this.getMarketplaceContract();
-      const listings = await contract.getActiveListings();
+      const callData = this.marketplaceInterface.encodeFunctionData('getActiveListings');
+      const result = await this._ethCall(this.marketplaceContractAddress, callData);
+      const decoded = this.marketplaceInterface.decodeFunctionResult('getActiveListings', result);
+      const listings = decoded[0];
       
       return listings.map(listing => ({
         listingId: Number(listing.listingId),
@@ -248,12 +250,14 @@ class BlockchainService {
   }
 
   /**
-   * Get listings by seller
+   * Get listings by seller - using direct RPC call
    */
   async getListingsBySeller(sellerAddress) {
     try {
-      const contract = this.getMarketplaceContract();
-      const listings = await contract.getListingsBySeller(sellerAddress);
+      const callData = this.marketplaceInterface.encodeFunctionData('getListingsBySeller', [sellerAddress]);
+      const result = await this._ethCall(this.marketplaceContractAddress, callData);
+      const decoded = this.marketplaceInterface.decodeFunctionResult('getListingsBySeller', result);
+      const listings = decoded[0];
       
       return listings.map(listing => ({
         listingId: Number(listing.listingId),
@@ -272,12 +276,14 @@ class BlockchainService {
   }
 
   /**
-   * Get listing by token
+   * Get listing by token - using direct RPC call
    */
   async getListingByToken(nftContractAddress, tokenId) {
     try {
-      const contract = this.getMarketplaceContract();
-      const listing = await contract.getListingByToken(nftContractAddress, tokenId);
+      const callData = this.marketplaceInterface.encodeFunctionData('getListingByToken', [nftContractAddress, tokenId]);
+      const result = await this._ethCall(this.marketplaceContractAddress, callData);
+      const decoded = this.marketplaceInterface.decodeFunctionResult('getListingByToken', result);
+      const listing = decoded[0];
       
       return {
         listingId: Number(listing.listingId),
@@ -296,13 +302,14 @@ class BlockchainService {
   }
 
   /**
-   * Get marketplace fee
+   * Get marketplace fee - using direct RPC call
    */
   async getMarketplaceFee() {
     try {
-      const contract = this.getMarketplaceContract();
-      const fee = await contract.marketplaceFee();
-      return Number(fee);
+      const callData = this.marketplaceInterface.encodeFunctionData('marketplaceFee');
+      const result = await this._ethCall(this.marketplaceContractAddress, callData);
+      const decoded = this.marketplaceInterface.decodeFunctionResult('marketplaceFee', result);
+      return Number(decoded[0]);
     } catch (error) {
       console.error('Error getting marketplace fee:', error);
       throw error;
@@ -368,12 +375,14 @@ class BlockchainService {
   }
 
   /**
-   * Check if NFT is approved for marketplace
+   * Check if NFT is approved for marketplace - using direct RPC call
    */
   async isNFTApprovedForMarketplace(ownerAddress) {
     try {
-      const contract = this.getNFTContract();
-      return await contract.isApprovedForAll(ownerAddress, this.marketplaceContractAddress);
+      const callData = this.nftInterface.encodeFunctionData('isApprovedForAll', [ownerAddress, this.marketplaceContractAddress]);
+      const result = await this._ethCall(this.nftContractAddress, callData);
+      const decoded = this.nftInterface.decodeFunctionResult('isApprovedForAll', result);
+      return decoded[0];
     } catch (error) {
       console.error('Error checking NFT approval:', error);
       throw error;
