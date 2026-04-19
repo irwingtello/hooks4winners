@@ -23,17 +23,20 @@ class BlockchainService {
 
   init() {
     try {
-      // Create a custom network object that explicitly disables ENS
-      const network = ethers.Network.from({
-        name: 'monad-testnet',
-        chainId: this.chainId,
-        ensAddress: null
+      // Create a network without ENS support
+      const network = new ethers.Network('monad-testnet', this.chainId);
+      
+      // Create provider with explicit options to skip ENS
+      this.provider = new ethers.JsonRpcProvider(this.rpcUrl, undefined, {
+        staticNetwork: network,
+        batchMaxCount: 1
       });
       
-      // Initialize provider with custom network
-      this.provider = new ethers.JsonRpcProvider(this.rpcUrl, network, {
-        staticNetwork: network
-      });
+      // Override getResolver to return null (disable ENS)
+      this.provider.getResolver = () => null;
+      this.provider.resolveName = async (name) => {
+        throw new Error(`ENS not supported on this network`);
+      };
       
       // Initialize wallet for backend operations
       if (this.deployerPrivateKey) {
