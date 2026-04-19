@@ -23,8 +23,12 @@ class BlockchainService {
 
   init() {
     try {
-      // Initialize provider
-      this.provider = new ethers.JsonRpcProvider(this.rpcUrl);
+      // Initialize provider with network config to disable ENS
+      this.provider = new ethers.JsonRpcProvider(this.rpcUrl, {
+        chainId: this.chainId,
+        name: 'monad-testnet',
+        ensAddress: null // Disable ENS
+      });
       
       // Initialize wallet for backend operations
       if (this.deployerPrivateKey) {
