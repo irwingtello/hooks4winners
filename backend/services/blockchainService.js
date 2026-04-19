@@ -7,11 +7,12 @@ const NFTMarketplaceABI = require('../abis/NFTMarketplace.json');
 
 class BlockchainService {
   constructor() {
-    this.rpcUrl = process.env.MONAD_RPC_URL || 'https://testnet-rpc.monad.xyz';
+    this.rpcUrl = (process.env.MONAD_RPC_URL || 'https://testnet-rpc.monad.xyz').trim();
     this.chainId = parseInt(process.env.MONAD_CHAIN_ID) || 10143;
-    this.nftContractAddress = process.env.NFT_CONTRACT_ADDRESS;
-    this.marketplaceContractAddress = process.env.MARKETPLACE_CONTRACT_ADDRESS;
-    this.deployerPrivateKey = process.env.DEPLOYER_PRIVATE_KEY;
+    // Trim addresses to remove any whitespace/newlines
+    this.nftContractAddress = (process.env.NFT_CONTRACT_ADDRESS || '').trim();
+    this.marketplaceContractAddress = (process.env.MARKETPLACE_CONTRACT_ADDRESS || '').trim();
+    this.deployerPrivateKey = process.env.DEPLOYER_PRIVATE_KEY?.trim();
     
     this.provider = null;
     this.wallet = null;
