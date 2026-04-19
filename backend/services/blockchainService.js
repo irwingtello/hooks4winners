@@ -17,34 +17,27 @@ class BlockchainService {
     this.wallet = null;
     this.nftContract = null;
     this.marketplaceContract = null;
+    this.nftInterface = null;
+    this.marketplaceInterface = null;
     
     this.init();
   }
 
   init() {
     try {
-      // Create provider with custom network that has ENS disabled
-      const network = new ethers.Network('monad-testnet', this.chainId);
-      this.provider = new ethers.JsonRpcProvider(this.rpcUrl, network, {
-        staticNetwork: network
-      });
+      // Create interfaces for encoding/decoding
+      this.nftInterface = new ethers.Interface(ContentNFTABI.abi || ContentNFTABI);
+      this.marketplaceInterface = new ethers.Interface(NFTMarketplaceABI.abi || NFTMarketplaceABI);
       
-      // Silently handle ENS errors - Monad doesn't support ENS
-      const originalDetectNetwork = this.provider._detectNetwork.bind(this.provider);
-      this.provider._detectNetwork = async () => {
-        try {
-          return await originalDetectNetwork();
-        } catch (e) {
-          return network;
-        }
-      };
+      // Create provider - we'll use direct RPC calls to avoid ENS issues
+      this.provider = new ethers.JsonRpcProvider(this.rpcUrl);
       
       // Initialize wallet for backend operations
       if (this.deployerPrivateKey) {
         this.wallet = new ethers.Wallet(this.deployerPrivateKey, this.provider);
       }
       
-      // Initialize contracts
+      // Initialize contracts (for encoding only, we'll use direct calls for reading)
       if (this.nftContractAddress && ContentNFTABI) {
         this.nftContract = new ethers.Contract(
           this.nftContractAddress,
@@ -65,6 +58,34 @@ class BlockchainService {
     } catch (error) {
       console.error('Error initializing blockchain service:', error);
     }
+  }
+
+  /**
+   * Make a direct RPC call to avoid ENS issues
+   */
+  async _rpcCall(method, params = []) {
+    const response = await fetch(this.rpcUrl, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        jsonrpc: '2.0',
+        id: Date.now(),
+        method,
+        params
+      })
+    });
+    const data = await response.json();
+    if (data.error) {
+      throw new Error(data.error.message || 'RPC Error');
+    }
+    return data.result;
+  }
+
+  /**
+   * Make a direct eth_call to a contract
+   */
+  async _ethCall(to, data) {
+    return await this._rpcCall('eth_call', [{ to, data }, 'latest']);
   }
 
   /**
@@ -104,12 +125,14 @@ class BlockchainService {
   }
 
   /**
-   * Get NFT metadata from blockchain
+   * Get NFT metadata from blockchain - using direct RPC call
    */
   async getNFTMetadata(tokenId) {
     try {
-      const contract = this.getNFTContract();
-      const metadata = await contract.getMetadata(tokenId);
+      const callData = this.nftInterface.encodeFunctionData('getMetadata', [tokenId]);
+      const result = await this._ethCall(this.nftContractAddress, callData);
+      const decoded = this.nftInterface.decodeFunctionResult('getMetadata', result);
+      const metadata = decoded[0];
       
       return {
         name: metadata.name,
@@ -167,13 +190,14 @@ class BlockchainService {
   }
 
   /**
-   * Get total NFT supply
+   * Get total NFT supply - using direct RPC call
    */
   async getTotalSupply() {
     try {
-      const contract = this.getNFTContract();
-      const supply = await this._callContract(contract, 'totalSupply');
-      return Number(supply);
+      const callData = this.nftInterface.encodeFunctionData('totalSupply');
+      const result = await this._ethCall(this.nftContractAddress, callData);
+      const decoded = this.nftInterface.decodeFunctionResult('totalSupply', result);
+      return Number(decoded[0]);
     } catch (error) {
       console.error('Error getting total supply:', error);
       throw error;
@@ -181,13 +205,14 @@ class BlockchainService {
   }
 
   /**
-   * Get NFTs by creator
+   * Get NFTs by creator - using direct RPC call
    */
   async getNFTsByCreator(creatorAddress) {
     try {
-      const contract = this.getNFTContract();
-      const tokenIds = await contract.getTokensByCreator(creatorAddress);
-      return tokenIds.map(id => Number(id));
+      const callData = this.nftInterface.encodeFunctionData('getTokensByCreator', [creatorAddress]);
+      const result = await this._ethCall(this.nftContractAddress, callData);
+      const decoded = this.nftInterface.decodeFunctionResult('getTokensByCreator', result);
+      return decoded[0].map(id => Number(id));
     } catch (error) {
       console.error('Error getting NFTs by creator:', error);
       throw error;
@@ -195,12 +220,14 @@ class BlockchainService {
   }
 
   /**
-   * Get NFT owner
+   * Get NFT owner - using direct RPC call
    */
   async getNFTOwner(tokenId) {
     try {
-      const contract = this.getNFTContract();
-      return await contract.ownerOf(tokenId);
+      const callData = this.nftInterface.encodeFunctionData('ownerOf', [tokenId]);
+      const result = await this._ethCall(this.nftContractAddress, callData);
+      const decoded = this.nftInterface.decodeFunctionResult('ownerOf', result);
+      return decoded[0];
     } catch (error) {
       console.error('Error getting NFT owner:', error);
       throw error;
