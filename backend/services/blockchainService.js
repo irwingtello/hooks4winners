@@ -23,9 +23,21 @@ class BlockchainService {
 
   init() {
     try {
-      // Create provider without any network detection
-      // This avoids ENS lookup completely
-      this.provider = new ethers.JsonRpcProvider(this.rpcUrl);
+      // Create provider with custom network that has ENS disabled
+      const network = new ethers.Network('monad-testnet', this.chainId);
+      this.provider = new ethers.JsonRpcProvider(this.rpcUrl, network, {
+        staticNetwork: network
+      });
+      
+      // Silently handle ENS errors - Monad doesn't support ENS
+      const originalDetectNetwork = this.provider._detectNetwork.bind(this.provider);
+      this.provider._detectNetwork = async () => {
+        try {
+          return await originalDetectNetwork();
+        } catch (e) {
+          return network;
+        }
+      };
       
       // Initialize wallet for backend operations
       if (this.deployerPrivateKey) {
