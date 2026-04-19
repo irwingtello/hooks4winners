@@ -138,12 +138,41 @@ class BlockchainService {
   }
 
   /**
+   * Execute a read-only contract call, handling ENS errors
+   */
+  async _callContract(contract, methodName, ...args) {
+    try {
+      const result = await contract[methodName](...args);
+      return result;
+    } catch (error) {
+      // If it's an ENS error, try using staticCall
+      if (error.code === 'UNSUPPORTED_OPERATION' || error.message?.includes('ENS')) {
+        console.log(`Retrying ${methodName} with direct call...`);
+        try {
+          // Use call directly to bypass ENS
+          const callData = contract.interface.encodeFunctionData(methodName, args);
+          const result = await this.provider.call({
+            to: contract.target || contract.address,
+            data: callData
+          });
+          const decoded = contract.interface.decodeFunctionResult(methodName, result);
+          return decoded.length === 1 ? decoded[0] : decoded;
+        } catch (e) {
+          console.error(`Error in ${methodName} fallback:`, e);
+          throw e;
+        }
+      }
+      throw error;
+    }
+  }
+
+  /**
    * Get total NFT supply
    */
   async getTotalSupply() {
     try {
       const contract = this.getNFTContract();
-      const supply = await contract.totalSupply();
+      const supply = await this._callContract(contract, 'totalSupply');
       return Number(supply);
     } catch (error) {
       console.error('Error getting total supply:', error);
