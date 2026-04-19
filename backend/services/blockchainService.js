@@ -25,34 +25,12 @@ class BlockchainService {
 
   init() {
     try {
-      // Create interfaces for encoding/decoding
+      // Create interfaces for encoding/decoding only
       this.nftInterface = new ethers.Interface(ContentNFTABI.abi || ContentNFTABI);
       this.marketplaceInterface = new ethers.Interface(NFTMarketplaceABI.abi || NFTMarketplaceABI);
       
-      // Create provider - we'll use direct RPC calls to avoid ENS issues
-      this.provider = new ethers.JsonRpcProvider(this.rpcUrl);
-      
-      // Initialize wallet for backend operations
-      if (this.deployerPrivateKey) {
-        this.wallet = new ethers.Wallet(this.deployerPrivateKey, this.provider);
-      }
-      
-      // Initialize contracts (for encoding only, we'll use direct calls for reading)
-      if (this.nftContractAddress && ContentNFTABI) {
-        this.nftContract = new ethers.Contract(
-          this.nftContractAddress,
-          ContentNFTABI.abi || ContentNFTABI,
-          this.provider
-        );
-      }
-      
-      if (this.marketplaceContractAddress && NFTMarketplaceABI) {
-        this.marketplaceContract = new ethers.Contract(
-          this.marketplaceContractAddress,
-          NFTMarketplaceABI.abi || NFTMarketplaceABI,
-          this.provider
-        );
-      }
+      // DON'T create ethers provider - use direct RPC calls to avoid ENS issues
+      // We only need the interfaces for encoding/decoding
       
       console.log('🔗 Blockchain service initialized');
     } catch (error) {
@@ -324,8 +302,7 @@ class BlockchainService {
    * Prepare mint NFT transaction data
    */
   prepareMintNFTData(nftData) {
-    const contract = this.getNFTContract();
-    return contract.interface.encodeFunctionData('mintNFT', [
+    return this.nftInterface.encodeFunctionData('mintNFT', [
       nftData.name || 'Untitled NFT',
       nftData.description || '',
       nftData.externalUrl || '',
@@ -347,9 +324,8 @@ class BlockchainService {
    * Prepare list NFT transaction data
    */
   prepareListNFTData(nftContractAddress, tokenId, priceInEther) {
-    const contract = this.getMarketplaceContract();
     const priceInWei = ethers.parseEther(priceInEther.toString());
-    return contract.interface.encodeFunctionData('listNFT', [
+    return this.marketplaceInterface.encodeFunctionData('listNFT', [
       nftContractAddress,
       tokenId,
       priceInWei
@@ -360,24 +336,21 @@ class BlockchainService {
    * Prepare buy NFT transaction data
    */
   prepareBuyNFTData(listingId) {
-    const contract = this.getMarketplaceContract();
-    return contract.interface.encodeFunctionData('buyNFT', [listingId]);
+    return this.marketplaceInterface.encodeFunctionData('buyNFT', [listingId]);
   }
 
   /**
    * Prepare cancel listing transaction data
    */
   prepareCancelListingData(listingId) {
-    const contract = this.getMarketplaceContract();
-    return contract.interface.encodeFunctionData('cancelListing', [listingId]);
+    return this.marketplaceInterface.encodeFunctionData('cancelListing', [listingId]);
   }
 
   /**
    * Prepare approve NFT for marketplace
    */
   prepareApproveNFTData(marketplaceAddress) {
-    const contract = this.getNFTContract();
-    return contract.interface.encodeFunctionData('setApprovalForAll', [
+    return this.nftInterface.encodeFunctionData('setApprovalForAll', [
       marketplaceAddress || this.marketplaceContractAddress,
       true
     ]);
