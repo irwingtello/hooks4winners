@@ -44,30 +44,19 @@ router.get('/listings', async (req, res) => {
 router.get('/listing/:listingId', async (req, res) => {
   try {
     const { listingId } = req.params;
-    const listing = await blockchainService.marketplaceContract.listings(listingId);
-    
-    const formattedListing = {
-      listingId: Number(listing.listingId || listingId),
-      tokenId: Number(listing.tokenId),
-      nftContract: listing.nftContract,
-      seller: listing.seller,
-      price: listing.price.toString(),
-      priceEther: require('ethers').formatEther(listing.price),
-      active: listing.active,
-      createdAt: Number(listing.createdAt)
-    };
+    const listing = await blockchainService.getListingById(listingId);
     
     // Get NFT metadata
     try {
-      const metadata = await blockchainService.getNFTMetadata(formattedListing.tokenId);
-      formattedListing.nft = metadata;
+      const metadata = await blockchainService.getNFTMetadata(listing.tokenId);
+      listing.nft = metadata;
     } catch (e) {
-      formattedListing.nft = null;
+      listing.nft = null;
     }
     
     res.json({
       success: true,
-      data: formattedListing
+      data: listing
     });
   } catch (error) {
     res.status(500).json({ success: false, error: error.message });
@@ -161,11 +150,10 @@ router.get('/fee', async (req, res) => {
  */
 router.get('/total', async (req, res) => {
   try {
-    const contract = blockchainService.getMarketplaceContract();
-    const total = await contract.totalListings();
+    const total = await blockchainService.getTotalListings();
     res.json({
       success: true,
-      data: { totalListings: Number(total) }
+      data: { totalListings: total }
     });
   } catch (error) {
     res.status(500).json({ success: false, error: error.message });

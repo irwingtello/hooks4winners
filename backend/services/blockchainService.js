@@ -390,6 +390,47 @@ class BlockchainService {
   }
 
   /**
+   * Get listing by ID - using direct RPC call
+   */
+  async getListingById(listingId) {
+    try {
+      const callData = this.marketplaceInterface.encodeFunctionData('listings', [listingId]);
+      const result = await this._ethCall(this.marketplaceContractAddress, callData);
+      const decoded = this.marketplaceInterface.decodeFunctionResult('listings', result);
+      const listing = decoded[0];
+      
+      return {
+        listingId: Number(listing.listingId || listingId),
+        tokenId: Number(listing.tokenId),
+        nftContract: listing.nftContract,
+        seller: listing.seller,
+        price: listing.price.toString(),
+        priceEther: ethers.formatEther(listing.price),
+        active: listing.active,
+        createdAt: Number(listing.createdAt)
+      };
+    } catch (error) {
+      console.error('Error getting listing by ID:', error);
+      throw error;
+    }
+  }
+
+  /**
+   * Get total listings - using direct RPC call
+   */
+  async getTotalListings() {
+    try {
+      const callData = this.marketplaceInterface.encodeFunctionData('totalListings');
+      const result = await this._ethCall(this.marketplaceContractAddress, callData);
+      const decoded = this.marketplaceInterface.decodeFunctionResult('totalListings', result);
+      return Number(decoded[0]);
+    } catch (error) {
+      console.error('Error getting total listings:', error);
+      throw error;
+    }
+  }
+
+  /**
    * Get gas price
    */
   async getGasPrice() {
