@@ -111,10 +111,10 @@ class PinataService {
    */
   async createNFTMetadata(nftData) {
     const metadata = {
-      name: nftData.name,
-      description: nftData.description,
+      name: nftData.name || 'Untitled NFT',
+      description: nftData.description || '',
       external_url: nftData.externalUrl || '',
-      image: nftData.image,
+      image: nftData.image || '',
       attributes: [
         {
           trait_type: "Género",

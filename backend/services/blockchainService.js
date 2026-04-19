@@ -257,10 +257,10 @@ class BlockchainService {
   prepareMintNFTData(nftData) {
     const contract = this.getNFTContract();
     return contract.interface.encodeFunctionData('mintNFT', [
-      nftData.name,
-      nftData.description,
+      nftData.name || 'Untitled NFT',
+      nftData.description || '',
       nftData.externalUrl || '',
-      nftData.image,
+      nftData.image || '',
       nftData.genre || 'General',
       nftData.durationSeconds || 60,
       nftData.publicationDate || Math.floor(Date.now() / 1000),
