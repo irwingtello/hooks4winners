@@ -23,11 +23,16 @@ class BlockchainService {
 
   init() {
     try {
-      // Initialize provider with network config to disable ENS
-      this.provider = new ethers.JsonRpcProvider(this.rpcUrl, {
-        chainId: this.chainId,
+      // Create a custom network object that explicitly disables ENS
+      const network = ethers.Network.from({
         name: 'monad-testnet',
-        ensAddress: null // Disable ENS
+        chainId: this.chainId,
+        ensAddress: null
+      });
+      
+      // Initialize provider with custom network
+      this.provider = new ethers.JsonRpcProvider(this.rpcUrl, network, {
+        staticNetwork: network
       });
       
       // Initialize wallet for backend operations
